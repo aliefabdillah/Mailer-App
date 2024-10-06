@@ -4,12 +4,12 @@ export class MailDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  destinationEmail: string;
+  destination: string;
 
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  senderEmail: string;
+  sender: string;
 
   @IsString()
   subject: string;

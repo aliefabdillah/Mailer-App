@@ -4,6 +4,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailController } from './mail.controller';
+import { PrismaService } from 'src/prisma.service';
 
 @Global()
 @Module({
@@ -12,6 +13,7 @@ import { MailController } from './mail.controller';
       transport: {
         host: process.env.MAIL_HOST,
         secure: false,
+        port: +process.env.MAIL_PORT,
         auth: {
           user: process.env.MAIL_USER,
           pass: process.env.MAIL_PASSWORD,
@@ -29,7 +31,7 @@ import { MailController } from './mail.controller';
       },
     }),
   ],
-  providers: [MailService],
+  providers: [MailService, PrismaService],
   exports: [MailService],
   controllers: [MailController],
 })
