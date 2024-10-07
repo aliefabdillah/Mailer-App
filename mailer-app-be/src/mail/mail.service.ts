@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { MailDto } from './dto/create-mail.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { PrismaService } from 'src/prisma.service';
@@ -30,6 +34,30 @@ export class MailService {
         },
       });
       return newEmail;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getUserEmail(id: string) {
+    try {
+      const emailData = await this.prisma.mail.findUnique({
+        where: { id: id },
+        select: {
+          id: true,
+          destination: true,
+          subject: true,
+          body: true,
+          sender: true,
+          createdAt: true,
+        },
+      });
+
+      if (!emailData) {
+        throw new NotFoundException('Email not found!').getResponse();
+      }
+
+      return emailData;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
