@@ -23,10 +23,10 @@ export default function Form() {
 
     if (formEmailState.responseData) {
       // Retrieve the existing data from LocalStorage
-      let historyData = localStorage.getItem("history");
+      const historyData = localStorage.getItem("history");
 
       // Parse the data, if it exists, or create an empty array
-      let arrayHistory = historyData ? JSON.parse(historyData) : [];
+      const arrayHistory = historyData ? JSON.parse(historyData) : [];
 
       // Add new data to the array
       arrayHistory.push(formEmailState.responseData.id);
