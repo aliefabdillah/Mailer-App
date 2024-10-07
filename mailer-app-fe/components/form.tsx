@@ -1,74 +1,123 @@
-import React from "react";
+"use client";
+import { sendEmailAction } from "@/app/data/formEmailAction";
+import React, { useEffect, useState } from "react";
+import { useFormState } from "react-dom";
+import ZodErrors from "./response/ZodErrors";
+import ResponseError from "./response/ResponseError";
+import ModalLoading from "./modalLoading";
 
 export default function Form() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [formEmailState, formEmailAction] = useFormState(sendEmailAction, {
+    data: null,
+  });
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [formEmailState]);
+
+  useEffect(() => {
+    if (!formEmailState.isLoading) {
+      setIsLoading(false);
+    }
+
+    if (formEmailState.responseData) {
+      // Retrieve the existing data from LocalStorage
+      let historyData = localStorage.getItem("history");
+
+      // Parse the data, if it exists, or create an empty array
+      let arrayHistory = historyData ? JSON.parse(historyData) : [];
+
+      // Add new data to the array
+      arrayHistory.push(formEmailState.responseData.id);
+
+      // Save the updated array back to LocalStorage
+      localStorage.setItem("history", JSON.stringify(arrayHistory));
+    }
+  }, [formEmailState]);
+
   return (
     <div className="px-16 mb-4">
-      <form>
+      <ResponseError
+        error={formEmailState.message}
+        classname={`mt-4 ${
+          formEmailState.isSuccess ? "alert-success" : "alert-error"
+        }`}
+      />
+      <form
+        id="form-email"
+        onSubmit={() => setIsLoading(true)}
+        action={formEmailAction}
+      >
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">From:</span>
           </div>
           <input
             type="text"
+            id="sender"
+            name="sender"
             placeholder="john@example.com"
             className="input input-bordered w-full"
           />
-          <div className="label">
-            <span className="label-text-alt"></span>
-          </div>
+          <ZodErrors error={formEmailState?.zodErrors?.sender} />
         </label>
+
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">To:</span>
           </div>
           <input
             type="text"
+            id="destination"
+            name="destination"
             placeholder="deo@example.com"
             className="input input-bordered w-full"
           />
-          <div className="label">
-            <span className="label-text-alt"></span>
-          </div>
+          <ZodErrors error={formEmailState?.zodErrors?.destination} />
         </label>
+
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">Subject:</span>
           </div>
           <input
             type="text"
+            id="subject"
+            name="subject"
             placeholder="Email Subject"
             className="input input-bordered w-full"
           />
-          <div className="label">
-            <span className="label-text-alt"></span>
-          </div>
+          <ZodErrors error={formEmailState?.zodErrors?.subject} />
         </label>
+
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">Body:</span>
           </div>
           <textarea
             className="textarea textarea-bordered h-36"
+            id="body"
+            name="body"
             placeholder="Email Body"
           ></textarea>
-          <div className="label">
-            <span className="label-text-alt"></span>
-          </div>
+          <ZodErrors error={formEmailState?.zodErrors?.body} />
         </label>
+        <div className="flex justify-end mt-4">
+          <button type="submit" className="btn btn-accent text-white">
+            Send
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="size-6"
+            >
+              <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+            </svg>
+          </button>
+        </div>
       </form>
-      <div className="flex justify-end">
-        <button className="btn btn-accent text-white">
-          Send
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="size-6"
-          >
-            <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-          </svg>
-        </button>
-      </div>
+      <ModalLoading isOpen={isLoading} />
     </div>
   );
 }
