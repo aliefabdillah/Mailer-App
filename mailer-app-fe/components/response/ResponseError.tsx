@@ -10,7 +10,7 @@ export default function ResponseError({
   if (!error) return null;
   return (
     <div role="alert" className={`alert ${classname}`}>
-      {classname?.includes("alert-info") ? (
+      {classname?.includes("alert-success") ? (
         <svg
           className="w-6 h-6 text-gray-800 dark:text-white"
           aria-hidden="true"
