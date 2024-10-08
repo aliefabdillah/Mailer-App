@@ -14,7 +14,6 @@ export class MailController {
   // get list of email history from request body that containing array of email id
   @Get('history')
   async findAll(@Query('email_id') emailIdList: []) {
-    console.log(emailIdList);
     const emailHistory = await Promise.all(
       emailIdList.map((emailId) => this.mailService.getUserEmail(emailId)),
     );
