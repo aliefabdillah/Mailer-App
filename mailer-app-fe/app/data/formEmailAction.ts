@@ -1,6 +1,7 @@
 import { EmailFormSchema } from "@/lib/zodDefinition";
-import { MailService } from "./mail.services";
+import { mailService } from "./index.service";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function sendEmailAction(prevState: any, formData: FormData) {
   const validatedField = EmailFormSchema.safeParse({
     sender: formData.get('sender'),
@@ -18,8 +19,6 @@ export async function sendEmailAction(prevState: any, formData: FormData) {
     }
   }
 
-  const API_URL = process.env.API_URL
-  const mailService = new MailService(API_URL ? API_URL : "")
   const responseData = await mailService.sendEmail(validatedField.data)
 
   if (!responseData) {
