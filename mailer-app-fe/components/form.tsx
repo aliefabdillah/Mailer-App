@@ -40,6 +40,7 @@ export default function Form() {
     <div className="px-16 mb-4">
       <ResponseError
         error={formEmailState.message}
+        code={"400"}
         classname={`mt-4 ${
           formEmailState.isSuccess ? "alert-success" : "alert-error"
         }`}

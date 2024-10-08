@@ -3,9 +3,11 @@ import React from "react";
 export default function ResponseError({
   classname,
   error,
+  code,
 }: {
   classname: string;
   readonly error: string;
+  readonly code: string;
 }) {
   if (!error) return null;
   return (
@@ -43,7 +45,7 @@ export default function ResponseError({
           />
         </svg>
       )}
-      <span className="text-white">{error}</span>
+      <span className="text-white">{code} - {error}</span>
     </div>
   );
 }
