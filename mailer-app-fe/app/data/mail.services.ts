@@ -37,4 +37,16 @@ export class MailService {
         return error.response.data;
       });
   };
+
+  getHistoryDetail = (emailId: string) => {
+    return this.instance
+      .get(`/history/${emailId}`)
+      .then((res) => {
+        return res.data;
+      })
+      .catch((error) => {
+        return error.response.data;
+      });
+
+  }
 }

@@ -24,7 +24,6 @@ export default function HistoryList() {
     setIsLoading(true);
     const localHistory = localStorage.getItem("history");
     const arrayHistory = localHistory ? JSON.parse(localHistory) : [];
-    // arrayHistory.push("6791f046-fdef-430b-af44-11c1b924a333");
     const response = await mailService.getHistoryList(arrayHistory);
 
     if (response.error) {
@@ -50,7 +49,6 @@ export default function HistoryList() {
     setIsLoading(false);
   };
 
-  console.log(historyData);
   return (
     <>
       {responseError.error ? (
