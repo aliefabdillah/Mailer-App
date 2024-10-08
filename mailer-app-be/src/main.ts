@@ -8,7 +8,6 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true, //if any property request who not in dto will return error
     }),
   );
 

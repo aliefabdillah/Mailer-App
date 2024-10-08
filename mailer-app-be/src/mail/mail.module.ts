@@ -5,6 +5,7 @@ import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailController } from './mail.controller';
 import { PrismaService } from 'src/prisma.service';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Global()
 @Module({
@@ -30,6 +31,7 @@ import { PrismaService } from 'src/prisma.service';
         },
       },
     }),
+    CloudinaryModule,
   ],
   providers: [MailService, PrismaService],
   exports: [MailService],
