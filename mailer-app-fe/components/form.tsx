@@ -12,6 +12,11 @@ export default function Form() {
     data: null,
   });
 
+  const [sender, setSender] = useState("");
+  const [destination, setDestination] = useState("");
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
+
   useEffect(() => {
     setIsLoading(false);
   }, [formEmailState]);
@@ -33,14 +38,24 @@ export default function Form() {
 
       // Save the updated array back to LocalStorage
       localStorage.setItem("history", JSON.stringify(arrayHistory));
+
+      setSender("");
+      setDestination("");
+      setSubject("");
+      setBody("");
     }
   }, [formEmailState]);
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault(); // Mencegah form dari refresh halaman
+  //   setIsLoading(true);
+  // };
 
   return (
     <div className="px-16 mb-4">
       <ResponseError
         error={formEmailState.message}
-        code={"400"}
+        code={formEmailState.isSuccess ? '200' : '400'}
         classname={`mt-4 ${
           formEmailState.isSuccess ? "alert-success" : "alert-error"
         }`}
@@ -58,6 +73,8 @@ export default function Form() {
             type="text"
             id="sender"
             name="sender"
+            value={sender}
+            onChange={(e) => setSender(e.target.value)}
             placeholder="john@example.com"
             className="input input-bordered w-full"
           />
@@ -72,7 +89,9 @@ export default function Form() {
             type="text"
             id="destination"
             name="destination"
+            value={destination}
             placeholder="deo@example.com"
+            onChange={(e) => setDestination(e.target.value)}
             className="input input-bordered w-full"
           />
           <ZodErrors error={formEmailState?.zodErrors?.destination} />
@@ -86,6 +105,8 @@ export default function Form() {
             type="text"
             id="subject"
             name="subject"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
             placeholder="Email Subject"
             className="input input-bordered w-full"
           />
@@ -100,6 +121,8 @@ export default function Form() {
             className="textarea textarea-bordered h-36"
             id="body"
             name="body"
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
             placeholder="Email Body"
           ></textarea>
           <ZodErrors error={formEmailState?.zodErrors?.body} />

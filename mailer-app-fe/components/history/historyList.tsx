@@ -66,13 +66,13 @@ export default function HistoryList() {
           <div key={index} className="bg-base-100 hover:bg-gray-200">
             <a href={`/history/${historyItem.id}`}>
               <div className="flex flex-row justify-between border-b-2 p-2">
-                <p>
+                <p className="w-1/4 truncate">
                   To:{" "}
-                  <span className="truncate">{historyItem.destination}</span>
+                  <span>{historyItem.destination}</span>
                 </p>
-                <p className="w-2/4">
+                <p className="w-2/4 truncate">
                   {historyItem.subject ? historyItem.subject : "(No Subject)"} -{" "}
-                  <span className="truncate">{historyItem.body}</span>
+                  <span>{historyItem.body}</span>
                 </p>
                 <p className="truncate">{formatDate(historyItem.createdAt)}</p>
               </div>
