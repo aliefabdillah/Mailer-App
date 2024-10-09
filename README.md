@@ -35,7 +35,19 @@ SMTP_PORT=<Your_SMTP_Port>
 SMTP_USER=<Your_SMTP_User>
 SMTP_PASS=<Your_SMTP_Password>
 
+# Cloudinary for upload file or you can use other service
+CLOUD_NAME=<cloud-name>
+API_KEY=<api-key>
+API_SECRET=<api-secret>
+CLOUD_FOLDER=<cloud-folder>
+
 DATABASE_URL="postgresql://username:password@localhost:5432/dbname?schema=public"
+```
+
+5. Create `.env` file in frontend folder
+```
+# Add this config
+API_URL="http://localhost:8000"
 ```
 
 # Libraries and Tools
