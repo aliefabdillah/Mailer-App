@@ -85,6 +85,7 @@ export class MailService {
           subject: true,
           body: true,
           sender: true,
+          files: true,
           createdAt: true,
         },
       });

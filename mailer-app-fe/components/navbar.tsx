@@ -12,7 +12,7 @@ export default function Navbar() {
             <a href="/send-mail">Send Email</a>
           </li>
           <li>
-            <a href="history">History</a>
+            <a href="/history">History</a>
           </li>
         </ul>
       </div>

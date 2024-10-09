@@ -1,8 +1,9 @@
 export type Email = {
-  id:          string;
+  id: string;
   destination: string;
-  subject?:     string;
-  body?:        string;
-  sender:      string;
-  createdAt:   string;
-}
+  subject?: string;
+  body?: string;
+  files?: string[];
+  sender: string;
+  createdAt: string;
+};

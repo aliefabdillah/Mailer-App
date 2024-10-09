@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import ResponseError from "../response/ResponseError";
 import Loading from "../loading";
 import { formatDate } from "@/lib/dateFormatter";
+import FilePreview from "../linkPreview";
+import Link from "next/link";
 
 export default function HistoryDetail({ emailId }: { emailId: string }) {
   const [emailData, setEmailData] = useState<Email | null>(null);
@@ -37,6 +39,7 @@ export default function HistoryDetail({ emailId }: { emailId: string }) {
         destination: responseEmail.destination,
         subject: responseEmail.subject,
         body: responseEmail.body,
+        files: responseEmail.files.split(","),
         createdAt: responseEmail.createdAt,
       };
       setEmailData(formattedResponseEmail);
@@ -80,6 +83,20 @@ export default function HistoryDetail({ emailId }: { emailId: string }) {
             {emailData?.subject ? emailData.subject : "(No Subject)"}
           </p>
           <p>{emailData?.body ? emailData.body : "-"}</p>
+
+          {/* Displaying file previews */}
+          {emailData?.files && emailData.files.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-lg font-bold">Attachments:</h3>
+              <div className="flex flex-row">
+                {emailData.files.map((fileUrl: string, index: number) => (
+                  <Link key={index} href={fileUrl}>
+                    <FilePreview fileUrl={fileUrl} />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </>
