@@ -5,12 +5,15 @@ import { useFormState } from "react-dom";
 import ZodErrors from "./response/ZodErrors";
 import ResponseError from "./response/ResponseError";
 import ModalLoading from "./modalLoading";
+import CustomFileSelector from "./customFileSelector";
 
 export default function Form() {
   const [isLoading, setIsLoading] = useState(false);
   const [formEmailState, formEmailAction] = useFormState(sendEmailAction, {
     data: null,
   });
+  const [multipleFile, setMultipleFile] = useState<File[]>([]);
+  const [fileUrls, setFileUrls] = useState<string[]>([]);
 
   const [sender, setSender] = useState("");
   const [destination, setDestination] = useState("");
@@ -27,6 +30,15 @@ export default function Form() {
     }
 
     if (formEmailState.responseData) {
+      setSender("");
+      setDestination("");
+      setSubject("");
+      setBody("");
+      setMultipleFile([]);
+      setFileUrls([]);
+    }
+
+    if (formEmailState.isSuccess == true) {
       // Retrieve the existing data from LocalStorage
       const historyData = localStorage.getItem("history");
 
@@ -38,24 +50,50 @@ export default function Form() {
 
       // Save the updated array back to LocalStorage
       localStorage.setItem("history", JSON.stringify(arrayHistory));
-
-      setSender("");
-      setDestination("");
-      setSubject("");
-      setBody("");
     }
   }, [formEmailState]);
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault(); // Mencegah form dari refresh halaman
-  //   setIsLoading(true);
-  // };
+  useEffect(() => {
+    // Cleanup URLs when the component unmounts or when files change
+    return () => {
+      fileUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [fileUrls]);
+
+  const handleMultipleFileSelected = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (e.target.files && e.target.files.length > 0) {
+      //convert `FileList` to `File[]`
+      const _files = Array.from(e.target.files);
+
+      const updatedFiles = [...multipleFile, ..._files];
+
+      // Generate temporary URLs for each file
+      const urls = updatedFiles.map((file) => URL.createObjectURL(file));
+      setMultipleFile(updatedFiles);
+      setFileUrls(urls);
+    }
+  };
+
+  const handleRemoveFile = (indexToRemove: number) => {
+    const updatedFiles = multipleFile.filter(
+      (_file, index) => index !== indexToRemove
+    );
+    const updatedUrls = fileUrls.filter((_, index) => index !== indexToRemove);
+
+    // Clean up the Object URL to avoid memory leaks
+    URL.revokeObjectURL(fileUrls[indexToRemove]);
+
+    setMultipleFile(updatedFiles); // Update files state
+    setFileUrls(updatedUrls); // Update URLs state
+  };
 
   return (
     <div className="px-16 mb-4">
       <ResponseError
         error={formEmailState.message}
-        code={formEmailState.isSuccess ? '200' : '400'}
+        code={formEmailState.isSuccess ? "200" : "400"}
         classname={`mt-4 ${
           formEmailState.isSuccess ? "alert-success" : "alert-error"
         }`}
@@ -127,6 +165,43 @@ export default function Form() {
           ></textarea>
           <ZodErrors error={formEmailState?.zodErrors?.body} />
         </label>
+
+        <label className="form-control mb-2 w-full">
+          <CustomFileSelector
+            name="files"
+            multiple
+            accept="*/*"
+            onChange={handleMultipleFileSelected}
+          />
+          <ZodErrors error={formEmailState?.zodErrors?.files} />
+        </label>
+        {multipleFile.map((file, index) => {
+          return (
+            <div
+              key={index}
+              className="flex flex-row space-x-4 text-left italic"
+            >
+              <div className="space-x-2 mb-2">
+                <a
+                  href={fileUrls[index]} // URL of the file
+                  download={file.name} // Filename for the download
+                  target="_blank" // Open in new tab
+                  rel="noopener noreferrer" // Security measure
+                  className="underline text-blue-700"
+                >
+                  {file.name}
+                </a>
+                <button
+                  type="button"
+                  className="btn btn-error btn-xs text-white"
+                  onClick={() => handleRemoveFile(index)}
+                >
+                  remove
+                </button>
+              </div>
+            </div>
+          );
+        })}
         <div className="flex justify-end mt-4">
           <button type="submit" className="btn btn-accent text-white">
             Send

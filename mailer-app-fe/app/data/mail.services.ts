@@ -22,12 +22,15 @@ export class MailService {
       });
   };
 
-  getHistoryList = (listEmailId: any) => {
+  getHistoryList = (listEmailId: Array<string>) => {
     const params = new URLSearchParams();
 
     // Add email IDs as query parameters
-    listEmailId.forEach((id: string) => params.append("email_id", id));
-    
+    if (listEmailId.length > 0) {
+      listEmailId.forEach((id: string) => params.append("email_id", id));
+    } else {
+      params.append("email_id", "");
+    }
     return this.instance
       .get(`/history?${params.toString()}`)
       .then((res) => {
@@ -47,6 +50,5 @@ export class MailService {
       .catch((error) => {
         return error.response.data;
       });
-
-  }
+  };
 }
